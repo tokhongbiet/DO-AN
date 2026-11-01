@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinhKienPC Store - Chuyên Linh Kiện Máy Tính</title>
+    <!-- Nhúng Font Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        🔥 Khuyến mãi sốc: Freeship toàn quốc cho đơn hàng từ 500.000đ!
+    </div>
+
+    <!-- HEADER -->
+    <
+        <div class="logo" onclick="showPage('home')">
+            <span class="logo-icon">🖥️</span> LinhKien<span>PC🖥️</span>
+        </div>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Bạn cần tìm linh kiện gì hôm nay?" oninput="searchProduct()">
+            <span class="search-icon">🔍</span>
+        </div>
+        <div class="header-actions">
+            <!-- Khu vực người dùng -->
+            <div class="user-group" id="user-group">
+                <!-- Khi chưa đăng nhập -->
+                <div class="action-item" id="login-btn" onclick="showPage('login')">
+                    <span class="icon">👤</span>
+                    <span>Đăng nhập</span>
+                </div>
+                
+                <!-- Khi đã đăng nhập (Mặc định ẩn) -->
+                <div class="user-logged-in" id="user-logged-in" style="display: none;">
+                    <div class="action-item" id="user-profile" onclick="handleUserClick()">
+                        <span class="icon" id="user-icon">👤</span>
+                        <span id="user-name">Khách hàng</span>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">Đăng xuất</button>
+                </div>
+            </div>
+
+            <!-- Giỏ hàng -->
+            <div class="action-item cart-icon" onclick="toggleCart()">
+                <span class="icon">🛒</span>
+                <span>Giỏ hàng</span>
+                <span class="cart-badge" id="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- THANH DANH MỤC -->
+    <nav class="category-nav">
+        <button class="cat-btn active" onclick="filterProducts('all', this)">Tất cả</button>
+        <button class="cat-btn" onclick="filterProducts('BanPhim', this)">Bàn Phím</button>
+        <button class="cat-btn" onclick="filterProducts('BoNguon', this)">Bộ Nguồn</button>
+        <button class="cat-btn" onclick="filterProducts('CapPhuKien', this)">Cáp & Phụ Kiện</button>
+        <button class="cat-btn" onclick="filterProducts('Card', this)">Card</button>
+        <button class="cat-btn" onclick="filterProducts('Chuot', this)">Chuột</button>
+        <button class="cat-btn" onclick="filterProducts('CPU', this)">CPU</button>
+        <button class="cat-btn" onclick="filterProducts('Mainboard', this)">Mainboard</button>
+        <button class="cat-btn" onclick="filterProducts('OCung', this)">Ổ Cứng</button>
+        <button class="cat-btn" onclick="filterProducts('RAM', this)">RAM</button>
+        <button class="cat-btn" onclick="filterProducts('TaiNghe', this)">Tai Nghe</button>
+        <button class="cat-btn" onclick="filterProducts('TanNhiet', this)">Tản Nhiệt</button>
+        <button class="cat-btn" onclick="filterProducts('VoMayTinh', this)">Vỏ Máy Tính</button>
+    </nav>
+
+    <!-- BANNER -->
+    <section id="banner-section" class="hero-banner">
+        <div class="hero-content">
+            <span class="hero-tag">⚡ BUILD PC THEO YÊU CẦU</span>
+            <h1>Nâng Cấp Máy Tính<br>Của Bạn Ngay Hôm Nay</h1>
+            <p>Hàng chính hãng - Bảo hành 36 tháng - Trả góp 0%</p>
+            <button class="hero-btn" onclick="scrollToProducts()">Mua Ngay</button>
+        </div>
+    </section>
+
+    <!-- CÁC TRANG -->
+    <main id="page-home" class="page-section">
+        <div class="section-header">
+            <h2 id="page-title">Sản phẩm nổi bật</h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="product-grid" id="product-list"></div>
+    </main>
+
+    <main id="page-login" class="page-section auth-container" style="display:none;">
+        <div class="auth-box">
+            <h2>Đăng Nhập Tài Khoản</h2>
+            <p style="color:#666; font-size: 14px; margin-bottom: 20px;">(Tài khoản test: <b>admin / 123</b> hoặc <b>khach / 123</b>)</p>
+            <input type="text" id="username" placeholder="Tên đăng nhập">
+            <input type="password" id="password" placeholder="Mật khẩu">
+            <button onclick="login()">Đăng Nhập</button>
+        </div>
+    </main>
+
+    <main id="page-history" class="page-section" style="display:none;">
+        <div class="section-header">
+            <h2>Lịch Sử Mua Hàng</h2>
+            <div class="section-line"></div>
+        </div>
+        <div id="history-list"></div>
+    </main>
+
+    <main id="page-admin" class="page-section" style="display:none;">
+        <div class="section-header">
+            <h2>Quản Lý Đơn Hàng (Admin)</h2>
+            <div class="section-line"></div>
+        </div>
+        <table id="admin-orders-table">
+            <thead>
+                <tr>
+                    <th>Mã Đơn</th>
+                    <th>Khách Hàng</th>
+                    <th>Tổng Tiền</th>
+                    <th>Trạng Thái</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody id="admin-orders-body"></tbody>
+        </table>
+    </main>
+
+    <!-- MODAL GIỎ HÀNG -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🛒 Giỏ Hàng Của Bạn</h2>
+                <span class="close" onclick="toggleCart()">&times;</span>
+            </div>
+            <ul id="cart-items"></ul>
+            <div class="modal-footer">
+                <h3>Tổng cộng: <span id="cart-total" style="color: #dc2626;">0 đ</span></h3>
+                <button class="checkout-btn" onclick="checkout()">Tiến Hành Đặt Hàng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NÚT LIÊN HỆ NỔI -->
+    <div class="floating-contact">
+        <a href="tel:19001234" class="float-btn phone" title="Gọi ngay">📞</a>
+        <a href="#" class="float-btn zalo" title="Chat Zalo">💬</a>
+    </div>
+
+    <!-- TOAST THÔNG BÁO -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
